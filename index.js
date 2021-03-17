@@ -9,7 +9,7 @@ import queue from 'async/queue';
 const BASE_URL = 'https://zakupki.gov.ru';
 const SITE = 'https://zakupki.gov.ru/epz/eruz/search/results.html?pageNumber=';
 const pages = 100;
-const concurrency = 10;
+const concurrency = 1;
 const startTime = new Date();
 
 export const p = new PuppeteerHandler();
