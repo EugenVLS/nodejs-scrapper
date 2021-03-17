@@ -36,6 +36,7 @@ const task = async initialData => {
     })
 
     await saveData({
+      ...initialData,
       name,
       phone,
       email,
