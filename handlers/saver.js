@@ -3,12 +3,11 @@ import fs from 'fs';
 import chalk from 'chalk';
 
 export default async function saveData(data) {
-  const { code } = data;
-  const fileName = `${code}.json`;
+  const fileName = 'data.txt';
   const savePath = path.join(__dirname, '..', 'data', fileName);
 
   return new Promise((resolve, reject) => {
-    fs.writeFile(savePath, JSON.stringify(data, null, 4), err => {
+    fs.appendFileSync(savePath, `\n${data.name}/${data.phone}/${data.email}`, err => {
       if (err) {
         return reject(err);
       }

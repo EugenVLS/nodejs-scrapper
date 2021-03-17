@@ -10,36 +10,35 @@ const task = async initialData => {
     console.log(chalk.green(`Getting data from: `) + chalk.green.bold(initialData.url));
     const detailContent = await p.getPageContent(initialData.url);
     const $ = cherio.load(detailContent);
+    let data = $('.wrapper')
+        .text()
+        .split(/\r\n|\r|\n/g)
+        .map(item => item.trim())
+        .filter(item => !!item);
 
-    let period = $('.catalog-generation-summary__desc_period')
-      .clone()
-      .children()
-      .remove()
-      .end()
-      .text();
+    let name = '';
+    let phone = '';
+    let email = '';
 
-    const priceNewStr = $(
-      '.catalog-generation-summary__info .catalog-generation-summary__desc:nth-of-type(2)'
-    ).text();
-
-    const priceWithMileageStr = $(
-      '.catalog-generation-summary__info .catalog-generation-summary__desc:nth-of-type(3)'
-    ).text();
-
-    let priceNew = priceNewStr ? formatPrice(priceNewStr) : null;
-    let priceWithMileage = priceWithMileageStr ? formatPrice(priceWithMileageStr) : null;
-    period = formatPeriod(period);
-
-    if (!priceWithMileage && priceNew) {
-      priceWithMileage = priceNew;
-      priceNew = null;
-    }
+    data.forEach((item,index) => {
+        if (item.toLowerCase() == 'ФИО'.toLowerCase()) {
+            name = data[index + 1];
+        }
+        if (item.toLowerCase() == 'ДОЛЖНОСТЬ'.toLowerCase()) {
+            name = data[index + 2];
+        }
+        if (item.toLowerCase() == 'Адрес электронной почты'.toLowerCase()) {
+            email = data[index + 1];
+        }
+        if (item.toLowerCase() == 'Контактный телефон'.toLowerCase()) {
+            phone = data[index + 1];
+        }
+    })
 
     await saveData({
-      ...initialData,
-      priceNew,
-      priceWithMileage,
-      period
+      name,
+      phone,
+      email,
     });
   } catch (err) {
     throw err;

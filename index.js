@@ -1,14 +1,14 @@
 import cherio from 'cherio';
 import chalk from 'chalk';
 import { slugify } from 'transliteration';
-
 import listItemsHandler from './handlers/listItemsHandler';
 import { arrayFromLength } from './helpers/common';
 import { PuppeteerHandler } from './helpers/puppeteer';
 import queue from 'async/queue';
 
-const SITE = 'https://auto.ru/catalog/cars/all/?page_num=';
-const pages = 4;
+const BASE_URL = 'https://zakupki.gov.ru';
+const SITE = 'https://zakupki.gov.ru/epz/eruz/search/results.html?pageNumber=';
+const pages = 1;
 const concurrency = 10;
 const startTime = new Date();
 
@@ -49,19 +49,18 @@ async function listPageHandle(url) {
   try {
     const pageContent = await p.getPageContent(url);
     const $ = cherio.load(pageContent);
-    const carsItems = [];
+    const contactItems = [];
 
-    $('.mosaic__title').each((i, header) => {
-      const url = $(header).attr('href');
+    $('.registry-entry__body-href a').each((i, header) => {
+      const url = BASE_URL + $(header).attr('href');
       const title = $(header).text();
 
-      carsItems.push({
-        title,
+      contactItems.push({
         url,
         code: slugify(title)
       });
     });
-    listItemsHandler(carsItems);
+    listItemsHandler(contactItems);
   } catch (err) {
     console.log(chalk.red('An error has occured \n'));
     console.log(err);

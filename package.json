@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run clean && babel-node index.js",
-    "clean": "rm -rf data && mkdir data "
+    "clean": "mkdir data "
   },
   "keywords": [],
   "author": "",
